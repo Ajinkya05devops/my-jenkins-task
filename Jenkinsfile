@@ -1,34 +1,29 @@
 pipeline {
     agent any
-
     tools {
         jdk 'jdk17'
-        maven 'maven3'
+        maven 'M3'
     }
-
     parameters {
-        string(name: 'RELEASE_NOTES', defaultValue: 'Initial release', description: 'Release notes')
+        string(name: 'RELEASE_NOTES', defaultValue: 'Initial release', description: 'Release notes for this build')
     }
-
     environment {
         APP_NAME = 'invoice-service'
     }
-
     options {
         timeout(time: 15, unit: 'MINUTES')
     }
-
     stages {
         stage('Checkout') {
             steps {
-                echo "App: ${APP_NAME}"
+                echo "App Name: ${APP_NAME}"
+                echo "Branch: ${env.GIT_BRANCH}"
                 checkout scm
-                echo "Git Branch is: ${env.GIT_BRANCH}"
             }
         }
         stage('Build') {
             steps {
-                echo "Release Notes: ${params.RELEASE_NOTES}"
+                echo "Notes: ${params.RELEASE_NOTES}"
                 sh 'mvn clean compile'
             }
         }
@@ -44,18 +39,12 @@ pipeline {
         }
         stage('Package') {
             when {
-                expression { 
-                    return env.GIT_BRANCH ==~ /.main./ 
-                }
+                expression { return env.GIT_BRANCH ==~ /.*main.*/ }
             }
             steps {
-                echo "Packaging on main branch - ${env.GIT_BRANCH}"
+                echo "Packaging main branch only"
                 sh 'mvn package -DskipTests'
             }
         }
-    }
-    post {
-        success { echo "SUCCESS!" }
-        failure { echo "FAILED!" }
     }
 }
