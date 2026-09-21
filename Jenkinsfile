@@ -9,6 +9,7 @@ pipeline {
     }
     environment {
         APP_NAME = 'invoice-service'
+        RELEASE_NOTES = 'invitial build - invoice service'
     }
     options {
         timeout(time: 15, unit: 'MINUTES')
