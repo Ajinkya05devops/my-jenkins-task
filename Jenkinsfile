@@ -1,8 +1,9 @@
+
 pipeline {
     agent any
     tools {
         jdk 'jdk17'
-        maven 'M3'
+        maven 'maven3'
     }
     parameters {
         string(name: 'RELEASE_NOTES', defaultValue: 'Initial release', description: 'Release notes for this build')
